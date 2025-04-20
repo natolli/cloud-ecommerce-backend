@@ -1,8 +1,8 @@
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
 
 const client = new DynamoDBClient({ region: "us-east-1" });
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { userId, productId, name, price, quantity } = body;

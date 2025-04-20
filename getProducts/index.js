@@ -1,22 +1,24 @@
-import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
+const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb");
 
 const client = new DynamoDBClient({ region: "us-east-1" });
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
     const search = event.queryStringParameters?.search;
     const params = { TableName: "Products" };
     const data = await client.send(new ScanCommand(params));
 
-    const items = data.Items.map(item => ({
+    const items = (data.Items || []).map((item) => ({
       productId: item.productId.S,
       name: item.name.S,
       price: item.price.N,
-      category: item.category.S
+      category: item.category.S,
     }));
 
     const filtered = search
-      ? items.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
+      ? items.filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        )
       : items;
 
     return {

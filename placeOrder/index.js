@@ -1,9 +1,9 @@
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { v4 as uuidv4 } from "uuid";
+const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
+const { v4: uuidv4 } = require("uuid");
 
 const client = new DynamoDBClient({ region: "us-east-1" });
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
     const claims = event.requestContext.authorizer.claims;
     const userId = claims.sub;
