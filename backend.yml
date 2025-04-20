@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install -g zip
+  build:
+    commands:
+      - zip -r getProducts.zip getProducts
+      - zip -r addToCart.zip addToCart
+      - cd placeOrder && npm install uuid && cd ..
+      - zip -r placeOrder.zip placeOrder
+  post_build:
+    commands:
+      - aws s3 cp getProducts.zip s3://ecommerce-lambda-deployments/lambda/
+      - aws s3 cp addToCart.zip s3://ecommerce-lambda-deployments/lambda/
+      - aws s3 cp placeOrder.zip s3://ecommerce-lambda-deployments/lambda/
