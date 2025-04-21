@@ -8,16 +8,18 @@ phases:
       - npm install -g zip
   build:
     commands:
-      - zip -r getProducts.zip getProducts
-      - zip -r addToCart.zip addToCart
-      - cd placeOrder && npm install uuid && cd ..
-      - zip -r placeOrder.zip placeOrder
+      # ✅ CD into each Lambda folder to ensure ZIP contains files at root
+      - cd getProducts && zip -r ../getProducts.zip . && cd ..
+      - cd addToCart && zip -r ../addToCart.zip . && cd ..
+      - cd placeOrder && npm install uuid && zip -r ../placeOrder.zip . && cd ..
   post_build:
     commands:
+      # ✅ Upload to S3
       - aws s3 cp getProducts.zip s3://ecommerce-lambda-deployments/lambda/
       - aws s3 cp addToCart.zip s3://ecommerce-lambda-deployments/lambda/
       - aws s3 cp placeOrder.zip s3://ecommerce-lambda-deployments/lambda/
 
+      # ✅ Update the Lambda functions to use latest ZIPs
       - aws lambda update-function-code --function-name getProducts --s3-bucket ecommerce-lambda-deployments --s3-key lambda/getProducts.zip
       - aws lambda update-function-code --function-name addToCart --s3-bucket ecommerce-lambda-deployments --s3-key lambda/addToCart.zip
       - aws lambda update-function-code --function-name placeOrder --s3-bucket ecommerce-lambda-deployments --s3-key lambda/placeOrder.zip
