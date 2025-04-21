@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const client = new DynamoDBClient({ region: "us-east-1" });
 
+//event handler
 exports.handler = async (event) => {
   try {
     const claims = event.requestContext.authorizer.claims;
