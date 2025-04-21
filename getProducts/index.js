@@ -13,6 +13,7 @@ exports.handler = async (event) => {
       name: item.name.S,
       price: item.price.N,
       category: item.category.S,
+      image: item.image?.S || null, // ✅ Now includes image
     }));
 
     const filtered = search
